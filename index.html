@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xhorse 软件工具下载中心</title>
+    <title>软件快速下载中心</title>
     <style>
-        /* 全局样式重置与基础设置 */
         * {
             margin: 0;
             padding: 0;
@@ -14,94 +14,86 @@
 
         body {
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            background-color: #f4f6f9;
+            background-color: #f0f2f5;
             color: #333;
-            line-height: 1.6;
             padding: 2rem;
         }
 
-        /* 容器布局 */
         .container {
-            max-width: 1200px;
+            max-width: 1400px; /* 加宽容器以容纳 4 列 */
             margin: 0 auto;
         }
 
-        /* 页面标题样式 */
         .page-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .page-header h1 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #2c3e50;
-            margin-bottom: 0.5rem;
         }
 
-        .page-header p {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-
-        /* 网格布局：自动适应屏幕宽度 */
+        /* 核心布局：强制每行 4 个 */
         .download-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            /* 这里强制分为 4 列，每列等宽 */
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 1.5rem; /* 卡片之间的间距 */
         }
 
-        /* 下载卡片样式 */
+        /* 紧凑卡片样式 */
         .download-card {
             background: #ffffff;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 8px;
+            padding: 1.2rem; /* 减小内边距 */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            border-top: 4px solid #3498db;
+            border-top: 3px solid #3498db;
+            height: 100%; /* 确保高度一致 */
         }
 
         .download-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
         }
 
-        /* 卡片内容样式 */
+        .card-content {
+            margin-bottom: 1rem;
+            text-align: center; /* 文字居中 */
+        }
+
         .card-content h3 {
-            font-size: 1.5rem;
+            font-size: 1.1rem; /* 稍微缩小字号 */
             color: #2c3e50;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
+            line-height: 1.4;
         }
 
         .card-content .version-tag {
             display: inline-block;
             background-color: #e1f0fa;
             color: #3498db;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
             font-weight: 600;
-            margin-bottom: 1rem;
         }
 
-        .card-content .description {
-            color: #666;
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* 下载按钮样式 */
+        /* 紧凑按钮 */
         .download-button {
             display: block;
             width: 100%;
-            padding: 0.8rem;
+            padding: 0.6rem;
             background-color: #3498db;
             color: #ffffff;
             text-align: center;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 4px;
+            font-size: 0.9rem;
             font-weight: 600;
             transition: background-color 0.2s ease;
         }
@@ -110,103 +102,133 @@
             background-color: #2980b9;
         }
 
-        /* 特殊说明：密码提示 */
+        /* 紧凑密码提示 */
         .password-note {
-            margin-top: 1rem;
-            font-size: 0.85rem;
+            margin-top: 0.8rem;
+            font-size: 0.75rem;
             color: #e67e22;
             background: #fff8e1;
-            padding: 0.5rem;
-            border-radius: 4px;
+            padding: 0.3rem;
+            border-radius: 3px;
             text-align: center;
+            font-family: monospace;
         }
 
-        /* 页脚 */
         .footer {
             text-align: center;
-            margin-top: 4rem;
+            margin-top: 3rem;
             color: #95a5a6;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+        }
+
+        /* 响应式：屏幕太小时自动调整，防止太挤 */
+        @media (max-width: 1024px) {
+            .download-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .download-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 480px) {
+            .download-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- 页面头部 -->
         <header class="page-header">
-            <h1>软件工具下载中心</h1>
-            <p>点击下方按钮即可跳转至官方下载链接</p>
+            <h1>软件快速下载中心</h1>
         </header>
 
-        <!-- 下载列表网格 -->
         <main class="download-grid">
-            
-            <!-- 卡片 1: VVDI2 -->
+
+            <!-- 1. VVDI2 -->
             <article class="download-card">
                 <div class="card-content">
                     <h3>VVDI2 工具</h3>
-                    <span class="version-tag">版本 V752</span>
-                    <p class="description">VVDI2 官方安装程序，适用于相关硬件设备的配置与升级。</p>
+                    <span class="version-tag">V752</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/vvdi2/software/VVDI2-InstallerV752.exe" class="download-button" target="_blank">立即下载 V752</a>
+                <a href="http://dl.xhorse.net.cn/product/vvdi2/software/VVDI2-InstallerV752.exe" class="download-button" target="_blank">立即下载</a>
             </article>
 
-
-
-
-            <!-- 卡片 2: MB 设备工具 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>MB 设备工具</h3>
-                    <span class="version-tag">版本 V5.1.6</span>
-                    <p class="description">专为 MB 设备设计的工具包，包含必要的驱动与配置软件。</p>
-                </div>
-                <a href="http://dl.xhorse.net.cn/product/vvdi-mb/software/VVDI-MBTOOLV5.1.6_password123456.rar" class="download-button" target="_blank">立即下载 MB 工具</a>
-            </article>
-
-
-
-
-
-
-
-
-            <!-- 卡片 3: 超编一代 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>超编一代 (Prog)</h3>
-                    <span class="version-tag">最新版本 5.3.8</span>
-                    <p class="description">超编一代编程器的最新控制软件，性能更稳定，功能更全面。</p>
-                </div>
-                <a href="http://dl.xhorse.net.cn/product/vvdiprog/VVDIProg5.3.8PASSWORD123456.zip" class="download-button" target="_blank">立即下载 超编一代</a>
-                <div class="password-note">解压密码: 123456</div>
-            </article>
-
-
-
-
-            <!-- 卡片 4: 超编二代 -->
+            <!-- 2. 超编二代 -->
             <article class="download-card">
                 <div class="card-content">
                     <h3>超编二代 (Multi-PROG)</h3>
-                    <span class="version-tag">最新版本</span>
-                    <p class="description">超编二代多功能编程器专用软件，支持更多芯片类型。</p>
+                    <span class="version-tag">最新版</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/multiProg/Multi-PROG.exe" class="download-button" target="_blank">立即下载 超编二代</a>
+                <a href="http://dl.xhorse.net.cn/product/multiProg/Multi-PROG.exe" class="download-button" target="_blank">立即下载</a>
             </article>
 
+            <!-- 3. MLB 工具 -->
+            <article class="download-card">
+                <div class="card-content">
+                    <h3>MLB 工具</h3>
+                    <span class="version-tag">最新版</span>
+                </div>
+                <a href="http://dl.xhorse.net.cn/product/vvdimlb/VVDI-MLB.exe" class="download-button" target="_blank">立即下载</a>
+                <div class="password-note">解压密码: 123456</div>
+            </article>
 
+            <!-- 4. 综合升级工具 -->
+            <article class="download-card">
+                <div class="card-content">
+                    <h3>综合升级工具</h3>
+                    <span class="version-tag">Kit</span>
+                </div>
+                <a href="http://dl.xhorse.net.cn/product/upgrade-kit.7z" class="download-button" target="_blank">立即下载</a>
+                <div class="password-note">解压密码: 123456</div>
+            </article>
 
+            <!-- 5. 超编一代 -->
+            <article class="download-card">
+                <div class="card-content">
+                    <h3>超编一代 (Prog)</h3>
+                    <span class="version-tag">V5.3.8</span>
+                </div>
+                <a href="http://dl.xhorse.net.cn/product/vvdiprog/VVDIProg5.3.8PASSWORD123456.zip" class="download-button" target="_blank">立即下载</a>
+                <div class="password-note">解压密码: 123456</div>
+            </article>
 
+            <!-- 6. MB 工具 -->
+            <article class="download-card">
+                <div class="card-content">
+                    <h3>MB 设备工具</h3>
+                    <span class="version-tag">V5.1.6</span>
+                </div>
+                <a href="http://dl.xhorse.net.cn/product/vvdi-mb/software/VVDI-MBTOOLV5.1.6_password123456.rar" class="download-button" target="_blank">立即下载</a>
+                <div class="password-note">解压密码: 123456</div>
+            </article>
 
+            <!-- 7. 宝马工具 -->
+            <article class="download-card">
+                <div class="card-content">
+                    <h3>宝马工具 (BMW)</h3>
+                    <span class="version-tag">V190</span>
+                </div>
+                <a href="http://dl.xhorse.net.cn/product/bmwtool/software/BMWTOOL-InstallerV190.exe" class="download-button" target="_blank">立即下载</a>
+            </article>
 
+            <!-- 8. 预留位置 (如果需要第 8 个软件，请在此处添加) -->
+            <!-- 目前只有 7 个软件，第 8 个位置留空或可放"联系技术支持"等 -->
+            <article class="download-card" style="border-top-color: #95a5a6; background: #f9f9f9;">
+                <div class="card-content">
+                    <h3 style="color:#7f8c8d">更多工具</h3>
+                    <span class="version-tag" style="background:#eee; color:#7f8c8d">敬请期待</span>
+                </div>
+                <div class="download-button" style="background-color: #95a5a6; cursor: default;">暂无下载</div>
+            </article>
 
         </main>
 
-        <!-- 页脚 -->
         <footer class="footer">
-            <p>&copy; 由长得帅跑的快的我制作.</p>
+            <p>© 由长得帅跑得快的我制作 2026</p>
         </footer>
     </div>
 
