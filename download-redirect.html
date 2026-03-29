@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全下载提示</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; 
+            text-align: center; 
+            padding: 60px 20px; 
+            background: #f4f6f9; 
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            display: inline-block;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 { color: #2c3e50; margin-bottom: 15px; }
+        .icon { font-size: 48px; margin-bottom: 20px; display: block; }
+        p { color: #666; margin: 15px 0; line-height: 1.6; }
+        .highlight { color: #e67e22; font-weight: bold; }
+
+        .btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 14px 30px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background 0.3s;
+        }
+        .btn:hover { background-color: #2980b9; }
+
+        .note { 
+            font-size: 13px; 
+            color: #999; 
+            margin-top: 20px; 
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <span class="icon">🔒</span>
+        <h2>安全下载提示</h2>
+        <p>您即将离开当前的安全加密页面 (HTTPS)。</p>
+        <p>下载链接来自官方服务器 (HTTP)，浏览器出于安全策略进行了拦截。</p>
+        <p class="highlight">这并非病毒，请放心下载。</p>
+
+        <a id="realDownloadBtn" class="btn" href="#">👉 点击下载文件</a>
+
+        <div class="note">
+            如果点击按钮没有反应，请尝试<strong>右键点击按钮</strong>，选择“在新标签页中打开链接”。
+        </div>
+    </div>
+
+    <script>
+        // 获取 URL 参数中的真实下载地址
+        const urlParams = new URLSearchParams(window.location.search);
+        const targetUrl = urlParams.get('url');
+
+        const btn = document.getElementById('realDownloadBtn');
+
+        if (targetUrl) {
+            // 解码并设置按钮链接
+            btn.href = decodeURIComponent(targetUrl);
+        } else {
+            // 如果没有链接，显示错误
+            document.querySelector('.container').innerHTML = `
+                <span class="icon">❌</span>
+                <h2>出错了</h2>
+                <p>未找到有效的下载链接。</p>
+                <p>请返回上一页重试。</p>
+            `;
+        }
+    </script>
+</body>
+</html>
