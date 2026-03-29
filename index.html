@@ -4,76 +4,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>软件快速下载中心</title>
+    <title>Xhorse 快速下载中心</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-            background-color: #f0f2f5;
-            color: #333;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1400px; /* 加宽容器以容纳 4 列 */
-            margin: 0 auto;
-        }
-
-        .page-header {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .page-header h1 {
-            font-size: 2rem;
-            color: #2c3e50;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background-color: #f0f2f5; color: #333; padding: 2rem; }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .page-header { text-align: center; margin-bottom: 2rem; }
+        .page-header h1 { font-size: 2rem; color: #2c3e50; }
 
         /* 核心布局：强制每行 4 个 */
         .download-grid {
             display: grid;
-            /* 这里强制分为 4 列，每列等宽 */
             grid-template-columns: repeat(4, 1fr); 
-            gap: 1.5rem; /* 卡片之间的间距 */
+            gap: 1.5rem;
         }
 
-        /* 紧凑卡片样式 */
         .download-card {
             background: #ffffff;
             border-radius: 8px;
-            padding: 1.2rem; /* 减小内边距 */
+            padding: 1.2rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             transition: transform 0.2s ease, box-shadow 0.2s ease;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             border-top: 3px solid #3498db;
-            height: 100%; /* 确保高度一致 */
+            height: 100%;
         }
 
-        .download-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
+        .download-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); }
+        .card-content { margin-bottom: 1rem; text-align: center; }
+        .card-content h3 { font-size: 1.1rem; color: #2c3e50; margin-bottom: 0.4rem; line-height: 1.4; }
 
-        .card-content {
-            margin-bottom: 1rem;
-            text-align: center; /* 文字居中 */
-        }
-
-        .card-content h3 {
-            font-size: 1.1rem; /* 稍微缩小字号 */
-            color: #2c3e50;
-            margin-bottom: 0.4rem;
-            line-height: 1.4;
-        }
-
-        .card-content .version-tag {
+        .version-tag {
             display: inline-block;
             background-color: #e1f0fa;
             color: #3498db;
@@ -83,7 +46,6 @@
             font-weight: 600;
         }
 
-        /* 紧凑按钮 */
         .download-button {
             display: block;
             width: 100%;
@@ -97,12 +59,8 @@
             font-weight: 600;
             transition: background-color 0.2s ease;
         }
+        .download-button:hover { background-color: #2980b9; }
 
-        .download-button:hover {
-            background-color: #2980b9;
-        }
-
-        /* 紧凑密码提示 */
         .password-note {
             margin-top: 0.8rem;
             font-size: 0.75rem;
@@ -114,29 +72,12 @@
             font-family: monospace;
         }
 
-        .footer {
-            text-align: center;
-            margin-top: 3rem;
-            color: #95a5a6;
-            font-size: 0.85rem;
-        }
+        .footer { text-align: center; margin-top: 3rem; color: #95a5a6; font-size: 0.85rem; }
 
-        /* 响应式：屏幕太小时自动调整，防止太挤 */
-        @media (max-width: 1024px) {
-            .download-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        @media (max-width: 768px) {
-            .download-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (max-width: 480px) {
-            .download-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        /* 响应式 */
+        @media (max-width: 1024px) { .download-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) { .download-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) { .download-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -154,6 +95,7 @@
                     <h3>VVDI2 工具</h3>
                     <span class="version-tag">V752</span>
                 </div>
+                <!-- 链接保持原样，JS 会自动处理 -->
                 <a href="http://dl.xhorse.net.cn/product/vvdi2/software/VVDI2-InstallerV752.exe" class="download-button" target="_blank">立即下载</a>
             </article>
 
@@ -173,7 +115,7 @@
                     <span class="version-tag">最新版</span>
                 </div>
                 <a href="http://dl.xhorse.net.cn/product/vvdimlb/VVDI-MLB.exe" class="download-button" target="_blank">立即下载</a>
-                <div class="password-note">解压密码: 123456</div>
+                <div class="password-note">密码：123456</div>
             </article>
 
             <!-- 4. 综合升级工具 -->
@@ -183,7 +125,7 @@
                     <span class="version-tag">Kit</span>
                 </div>
                 <a href="http://dl.xhorse.net.cn/product/upgrade-kit.7z" class="download-button" target="_blank">立即下载</a>
-                <div class="password-note">解压密码: 123456</div>
+                <div class="password-note">密码：123456</div>
             </article>
 
             <!-- 5. 超编一代 -->
@@ -193,7 +135,7 @@
                     <span class="version-tag">V5.3.8</span>
                 </div>
                 <a href="http://dl.xhorse.net.cn/product/vvdiprog/VVDIProg5.3.8PASSWORD123456.zip" class="download-button" target="_blank">立即下载</a>
-                <div class="password-note">解压密码: 123456</div>
+                <div class="password-note">密码：123456</div>
             </article>
 
             <!-- 6. MB 工具 -->
@@ -203,7 +145,7 @@
                     <span class="version-tag">V5.1.6</span>
                 </div>
                 <a href="http://dl.xhorse.net.cn/product/vvdi-mb/software/VVDI-MBTOOLV5.1.6_password123456.rar" class="download-button" target="_blank">立即下载</a>
-                <div class="password-note">解压密码: 123456</div>
+                <div class="password-note">密码：123456</div>
             </article>
 
             <!-- 7. 宝马工具 -->
@@ -215,8 +157,7 @@
                 <a href="http://dl.xhorse.net.cn/product/bmwtool/software/BMWTOOL-InstallerV190.exe" class="download-button" target="_blank">立即下载</a>
             </article>
 
-            <!-- 8. 预留位置 (如果需要第 8 个软件，请在此处添加) -->
-            <!-- 目前只有 7 个软件，第 8 个位置留空或可放"联系技术支持"等 -->
+            <!-- 8. 占位卡片 -->
             <article class="download-card" style="border-top-color: #95a5a6; background: #f9f9f9;">
                 <div class="card-content">
                     <h3 style="color:#7f8c8d">更多工具</h3>
@@ -228,9 +169,28 @@
         </main>
 
         <footer class="footer">
-            <p>© 由长得帅跑得快的我制作 2026</p>
+            <p>© 2026 Xhorse Tools. All rights reserved.</p>
         </footer>
     </div>
 
+    <!-- 🪄 魔法脚本：自动将 http 链接转换为跳转链接 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 获取所有链接
+            const allLinks = document.querySelectorAll('a[href^="http://dl.xhorse.net.cn"]');
+
+            allLinks.forEach(function(link) {
+                const originalUrl = link.href;
+                // 将原始 URL 编码，防止特殊字符破坏链接结构
+                const encodedUrl = encodeURIComponent(originalUrl);
+                // 重写链接指向中间页
+                link.href = `download-redirect.html?url=${encodedUrl}`;
+                // 确保在新标签页打开（虽然 HTML 里已经有了 target="_blank"，这里双重保险）
+                link.setAttribute('target', '_blank');
+            });
+
+            console.log("下载链接已自动转换为安全跳转模式。");
+        });
+    </script>
 </body>
 </html>
