@@ -11,6 +11,7 @@
         .container { max-width: 1400px; margin: 0 auto; }
         .page-header { text-align: center; margin-bottom: 2rem; }
         .page-header h1 { font-size: 2rem; color: #2c3e50; }
+        .page-header p { color: #e67e22; font-size: 0.9rem; margin-top: 10px; background: #fff3cd; display: inline-block; padding: 5px 15px; border-radius: 20px; }
 
         /* 核心布局：强制每行 4 个 */
         .download-grid {
@@ -30,6 +31,7 @@
             justify-content: space-between;
             border-top: 3px solid #3498db;
             height: 100%;
+            position: relative;
         }
 
         .download-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); }
@@ -46,11 +48,12 @@
             font-weight: 600;
         }
 
-        .download-button {
+        /* 按钮样式 */
+        .action-button {
             display: block;
             width: 100%;
             padding: 0.6rem;
-            background-color: #3498db;
+            background-color: #27ae60; /* 绿色表示复制操作 */
             color: #ffffff;
             text-align: center;
             text-decoration: none;
@@ -58,8 +61,10 @@
             font-size: 0.9rem;
             font-weight: 600;
             transition: background-color 0.2s ease;
+            border: none;
+            cursor: pointer;
         }
-        .download-button:hover { background-color: #2980b9; }
+        .action-button:hover { background-color: #219150; }
 
         .password-note {
             margin-top: 0.8rem;
@@ -78,6 +83,68 @@
         @media (max-width: 1024px) { .download-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) { .download-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 480px) { .download-grid { grid-template-columns: 1fr; } }
+
+        /* 弹窗样式 (Modal) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: slideDown 0.3s ease;
+        }
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .modal-icon { font-size: 40px; margin-bottom: 15px; display: block; }
+        .modal-title { font-size: 1.2rem; color: #2c3e50; margin-bottom: 10px; }
+        .modal-text { color: #666; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.5; }
+        .modal-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background: #f9f9f9;
+            color: #555;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .btn-open {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-open:hover { background-color: #2980b9; }
+        .btn-close {
+            background-color: #95a5a6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-close:hover { background-color: #7f8c8d; }
     </style>
 </head>
 <body>
@@ -85,6 +152,7 @@
     <div class="container">
         <header class="page-header">
             <h1>软件快速下载中心</h1>
+            <p>🔒 由于浏览器安全策略，点击按钮将<strong>复制链接</strong>，请粘贴到浏览器地址栏下载</p>
         </header>
 
         <main class="download-grid">
@@ -95,8 +163,8 @@
                     <h3>VVDI2 工具</h3>
                     <span class="version-tag">V752</span>
                 </div>
-                <!-- 链接保持原样，JS 会自动处理 -->
-                <a href="http://dl.xhorse.net.cn/product/vvdi2/software/VVDI2-InstallerV752.exe" class="download-button" target="_blank">立即下载</a>
+                <!-- data-link 存储真实链接 -->
+                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/vvdi2/software/VVDI2-InstallerV752.exe')">复制并打开</button>
             </article>
 
             <!-- 2. 超编二代 -->
@@ -105,7 +173,7 @@
                     <h3>超编二代 (Multi-PROG)</h3>
                     <span class="version-tag">最新版</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/multiProg/Multi-PROG.exe" class="download-button" target="_blank">立即下载</a>
+                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/multiProg/Multi-PROG.exe')">复制并打开</button>
             </article>
 
             <!-- 3. MLB 工具 -->
@@ -114,7 +182,7 @@
                     <h3>MLB 工具</h3>
                     <span class="version-tag">最新版</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/vvdimlb/VVDI-MLB.exe" class="download-button" target="_blank">立即下载</a>
+                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/vvdimlb/VVDI-MLB.exe')">复制并打开</button>
                 <div class="password-note">密码：123456</div>
             </article>
 
@@ -124,7 +192,7 @@
                     <h3>综合升级工具</h3>
                     <span class="version-tag">Kit</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/upgrade-kit.7z" class="download-button" target="_blank">立即下载</a>
+                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/upgrade-kit.7z')">复制并打开</button>
                 <div class="password-note">密码：123456</div>
             </article>
 
@@ -134,7 +202,7 @@
                     <h3>超编一代 (Prog)</h3>
                     <span class="version-tag">V5.3.8</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/vvdiprog/VVDIProg5.3.8PASSWORD123456.zip" class="download-button" target="_blank">立即下载</a>
+                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/vvdiprog/VVDIProg5.3.8PASSWORD123456.zip')">复制并打开</button>
                 <div class="password-note">密码：123456</div>
             </article>
 
@@ -144,7 +212,7 @@
                     <h3>MB 设备工具</h3>
                     <span class="version-tag">V5.1.6</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/vvdi-mb/software/VVDI-MBTOOLV5.1.6_password123456.rar" class="download-button" target="_blank">立即下载</a>
+                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/vvdi-mb/software/VVDI-MBTOOLV5.1.6_password123456.rar')">复制并打开</button>
                 <div class="password-note">密码：123456</div>
             </article>
 
@@ -154,7 +222,7 @@
                     <h3>宝马工具 (BMW)</h3>
                     <span class="version-tag">V190</span>
                 </div>
-                <a href="http://dl.xhorse.net.cn/product/bmwtool/software/BMWTOOL-InstallerV190.exe" class="download-button" target="_blank">立即下载</a>
+                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/bmwtool/software/BMWTOOL-InstallerV190.exe')">复制并打开</button>
             </article>
 
             <!-- 8. 占位卡片 -->
@@ -163,7 +231,7 @@
                     <h3 style="color:#7f8c8d">更多工具</h3>
                     <span class="version-tag" style="background:#eee; color:#7f8c8d">敬请期待</span>
                 </div>
-                <div class="download-button" style="background-color: #95a5a6; cursor: default;">暂无下载</div>
+                <div class="action-button" style="background-color: #95a5a6; cursor: default;">暂无下载</div>
             </article>
 
         </main>
@@ -173,24 +241,67 @@
         </footer>
     </div>
 
-    <!-- 🪄 魔法脚本：自动将 http 链接转换为跳转链接 -->
+    <!-- 弹窗结构 -->
+    <div id="copyModal" class="modal-overlay">
+        <div class="modal-box">
+            <span class="modal-icon">📋</span>
+            <h3 class="modal-title">链接已复制！</h3>
+            <p class="modal-text">下载地址已复制到剪贴板。<br>请点击下方按钮在新标签页打开，或手动粘贴到浏览器地址栏。</p>
+            <input type="text" id="modalInput" class="modal-input" readonly>
+            <div class="modal-btn-group">
+                <a id="openLinkBtn" href="#" target="_blank" class="btn-open">🚀 前往下载</a>
+                <button onclick="closeModal()" class="btn-close">关闭</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // 获取所有链接
-            const allLinks = document.querySelectorAll('a[href^="http://dl.xhorse.net.cn"]');
-
-            allLinks.forEach(function(link) {
-                const originalUrl = link.href;
-                // 将原始 URL 编码，防止特殊字符破坏链接结构
-                const encodedUrl = encodeURIComponent(originalUrl);
-                // 重写链接指向中间页
-                link.href = `download-redirect.html?url=${encodedUrl}`;
-                // 确保在新标签页打开（虽然 HTML 里已经有了 target="_blank"，这里双重保险）
-                link.setAttribute('target', '_blank');
+        // 复制并显示弹窗的函数
+        function copyAndShow(url) {
+            // 1. 复制到剪贴板
+            navigator.clipboard.writeText(url).then(function() {
+                // 复制成功
+                showModal(url);
+            }, function(err) {
+                // 如果复制失败（极少见），尝试旧方法
+                const textArea = document.createElement("textarea");
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showModal(url);
+                } catch (err) {
+                    alert('复制失败，请手动记录链接：' + url);
+                }
+                document.body.removeChild(textArea);
             });
+        }
 
-            console.log("下载链接已自动转换为安全跳转模式。");
-        });
+        // 显示弹窗
+        function showModal(url) {
+            const modal = document.getElementById('copyModal');
+            const input = document.getElementById('modalInput');
+            const openBtn = document.getElementById('openLinkBtn');
+
+            input.value = url;
+            openBtn.href = url;
+
+            modal.style.display = 'flex';
+        }
+
+        // 关闭弹窗
+        function closeModal() {
+            document.getElementById('copyModal').style.display = 'none';
+        }
+
+        // 点击弹窗外部也可以关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('copyModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
     </script>
 </body>
 </html>
