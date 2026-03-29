@@ -4,304 +4,528 @@
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Xhorse 快速下载中心</title>
+    <title>Xhorse 软件下载中心</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background-color: #f0f2f5; color: #333; padding: 2rem; }
-        .container { max-width: 1400px; margin: 0 auto; }
+        body { font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; background-color: #f4f6f9; color: #333; padding: 2rem; }
+        .container { max-width: 1200px; margin: 0 auto; }
+
+        .alert-box {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #90caf9;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
         .page-header { text-align: center; margin-bottom: 2rem; }
         .page-header h1 { font-size: 2rem; color: #2c3e50; }
-        .page-header p { color: #e67e22; font-size: 0.9rem; margin-top: 10px; background: #fff3cd; display: inline-block; padding: 5px 15px; border-radius: 20px; }
 
-        /* 核心布局：强制每行 4 个 */
         .download-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr); 
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
         }
 
-        .download-card {
-            background: #ffffff;
+        .card {
+            background: #fff;
             border-radius: 8px;
-            padding: 1.2rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            border-top: 3px solid #3498db;
+            align-items: center;
+            border-top: 4px solid #3498db;
+            transition: transform 0.2s;
             height: 100%;
-            position: relative;
         }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
 
-        .download-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); }
-        .card-content { margin-bottom: 1rem; text-align: center; }
-        .card-content h3 { font-size: 1.1rem; color: #2c3e50; margin-bottom: 0.4rem; line-height: 1.4; }
+        .card h3 { font-size: 1.1rem; color: #2c3e50; margin-bottom: 0.5rem; text-align: center; }
+        .ver-tag { background: #e1f0fa; color: #3498db; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-bottom: 1rem; }
 
-        .version-tag {
-            display: inline-block;
-            background-color: #e1f0fa;
-            color: #3498db;
-            padding: 0.2rem 0.6rem;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* 按钮样式 */
-        .action-button {
-            display: block;
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            padding: 0.6rem;
-            background-color: #27ae60; /* 绿色表示复制操作 */
-            color: #ffffff;
-            text-align: center;
-            text-decoration: none;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: background-color 0.2s ease;
-            border: none;
-            cursor: pointer;
+            margin-bottom: 1rem;
         }
-        .action-button:hover { background-color: #219150; }
 
-        .password-note {
-            margin-top: 0.8rem;
-            font-size: 0.75rem;
+        .copy-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+        }
+        .copy-btn:hover { background-color: #219150; transform: translateY(-1px); }
+        .copy-btn:active { transform: translateY(1px); }
+
+        .pwd-note {
+            margin-top: 10px;
+            font-size: 0.8rem;
             color: #e67e22;
-            background: #fff8e1;
-            padding: 0.3rem;
-            border-radius: 3px;
-            text-align: center;
+            background: #fff3cd;
+            padding: 4px 10px;
+            border-radius: 4px;
             font-family: monospace;
+            font-weight: bold;
         }
 
         .footer { text-align: center; margin-top: 3rem; color: #95a5a6; font-size: 0.85rem; }
 
-        /* 响应式 */
         @media (max-width: 1024px) { .download-grid { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) { .download-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 480px) { .download-grid { grid-template-columns: 1fr; } }
 
-        /* 弹窗样式 (Modal) */
+        /* ================= 动画引导弹窗样式 ================= */
         .modal-overlay {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             justify-content: center;
             align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
-        .modal-box {
+        .modal-overlay.active { display: flex; opacity: 1; }
+
+        .guide-card {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            text-align: center;
-            max-width: 400px;
             width: 90%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            animation: slideDown 0.3s ease;
-        }
-        @keyframes slideDown {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .modal-icon { font-size: 40px; margin-bottom: 15px; display: block; }
-        .modal-title { font-size: 1.2rem; color: #2c3e50; margin-bottom: 10px; }
-        .modal-text { color: #666; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.5; }
-        .modal-input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background: #f9f9f9;
-            color: #555;
-            font-size: 0.85rem;
-            margin-bottom: 20px;
+            max-width: 480px;
+            border-radius: 16px;
+            padding: 30px;
             text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
-        .btn-open {
-            background-color: #3498db;
-            color: white;
-            padding: 10px 20px;
+        .modal-overlay.active .guide-card { transform: scale(1); }
+
+        .step-content { display: none; animation: fadeIn 0.5s; }
+        .step-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .icon-box { font-size: 50px; margin-bottom: 15px; display: inline-block; }
+        .bounce { animation: bounce 2s infinite; }
+        @keyframes bounce { 0%, 20%, 50%, 80%, 100% {transform: translateY(0);} 40% {transform: translateY(-10px);} 60% {transform: translateY(-5px);} }
+
+        .guide-title { font-size: 1.4rem; color: #2c3e50; margin-bottom: 10px; font-weight: bold; }
+        .guide-text { color: #666; font-size: 0.95rem; line-height: 1.6; margin-bottom: 20px; }
+
+        /* 键盘按键样式 */
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .key {
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border: 1px solid #ccc;
+            border-bottom: 4px solid #bbb;
+            border-radius: 6px;
+            color: #333;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.1rem;
+            min-width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .key.large { min-width: 140px; background: linear-gradient(145deg, #27ae60, #219150); color: white; border-bottom-color: #1e8449; }
+        .key.plus { background: transparent; border: none; box-shadow: none; font-size: 1.5rem; color: #7f8c8d; min-width: auto; height: auto; border-bottom: none; }
+
+        .press-anim { animation: pressKey 1.5s infinite; }
+        @keyframes pressKey {
+            0%, 100% { transform: translateY(0); border-bottom-width: 4px; }
+            50% { transform: translateY(4px); border-bottom-width: 0px; }
+        }
+
+        .progress-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .dot { width: 10px; height: 10px; border-radius: 50%; background: #ddd; transition: background 0.3s; }
+        .dot.active { background: #27ae60; transform: scale(1.2); }
+
+        .btn-action {
+            padding: 12px 30px;
             border: none;
-            border-radius: 4px;
+            border-radius: 25px;
+            font-size: 1rem;
             cursor: pointer;
             font-weight: bold;
-            text-decoration: none;
+            transition: transform 0.1s, background 0.2s;
+            margin-top: 10px;
             display: inline-block;
         }
-        .btn-open:hover { background-color: #2980b9; }
-        .btn-close {
-            background-color: #95a5a6;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
+        .btn-primary { background: #27ae60; color: white; box-shadow: 0 4px 6px rgba(39, 174, 96, 0.3); }
+        .btn-primary:hover { background: #219150; transform: translateY(-2px); }
+
+        .btn-secondary { background: #ecf0f1; color: #7f8c8d; margin-top: 10px; font-size: 0.9rem; padding: 8px 20px; }
+        .btn-secondary:hover { background: #bdc3c7; }
+
+        .arrow-up {
+            font-size: 40px;
+            color: #e74c3c;
+            margin: 10px 0;
+            animation: bounceUp 1.5s infinite;
         }
-        .btn-close:hover { background-color: #7f8c8d; }
+        @keyframes bounceUp {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header class="page-header">
-            <h1>软件快速下载中心</h1>
-            <p>🔒 由于浏览器安全策略，点击按钮将<strong>复制链接</strong>，请粘贴到浏览器地址栏下载</p>
-        </header>
-
-        <main class="download-grid">
-
-            <!-- 1. VVDI2 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>VVDI2 工具</h3>
-                    <span class="version-tag">V752</span>
-                </div>
-                <!-- data-link 存储真实链接 -->
-                <button class="action-button" onclick="copyAndShow('https://wwbsp.lanzoum.com/iTN5i3lug7le')">复制并打开</button>
-            </article>
-
-            <!-- 2. 超编二代 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>超编二代 (Multi-PROG)</h3>
-                    <span class="version-tag">最新版</span>
-                </div>
-                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/multiProg/Multi-PROG.exe')">复制并打开</button>
-            </article>
-
-            <!-- 3. MLB 工具 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>MLB 工具</h3>
-                    <span class="version-tag">最新版</span>
-                </div>
-                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/vvdimlb/VVDI-MLB.exe')">复制并打开</button>
-                <div class="password-note">密码：123456</div>
-            </article>
-
-            <!-- 4. 综合升级工具 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>综合升级工具</h3>
-                    <span class="version-tag">Kit</span>
-                </div>
-                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/upgrade-kit.7z')">复制并打开</button>
-                <div class="password-note">密码：123456</div>
-            </article>
-
-            <!-- 5. 超编一代 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>超编一代 (Prog)</h3>
-                    <span class="version-tag">V5.3.8</span>
-                </div>
-                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/vvdiprog/VVDIProg5.3.8PASSWORD123456.zip')">复制并打开</button>
-                <div class="password-note">密码：123456</div>
-            </article>
-
-            <!-- 6. MB 工具 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>MB 设备工具</h3>
-                    <span class="version-tag">V5.1.6</span>
-                </div>
-                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/vvdi-mb/software/VVDI-MBTOOLV5.1.6_password123456.rar')">复制并打开</button>
-                <div class="password-note">密码：123456</div>
-            </article>
-
-            <!-- 7. 宝马工具 -->
-            <article class="download-card">
-                <div class="card-content">
-                    <h3>宝马工具 (BMW)</h3>
-                    <span class="version-tag">V190</span>
-                </div>
-                <button class="action-button" onclick="copyAndShow('http://dl.xhorse.net.cn/product/bmwtool/software/BMWTOOL-InstallerV190.exe')">复制并打开</button>
-            </article>
-
-            <!-- 8. 占位卡片 -->
-            <article class="download-card" style="border-top-color: #95a5a6; background: #f9f9f9;">
-                <div class="card-content">
-                    <h3 style="color:#7f8c8d">更多工具</h3>
-                    <span class="version-tag" style="background:#eee; color:#7f8c8d">敬请期待</span>
-                </div>
-                <div class="action-button" style="background-color: #95a5a6; cursor: default;">暂无下载</div>
-            </article>
-
-        </main>
-
-        <footer class="footer">
-            <p>© 2026 Xhorse Tools. All rights reserved.</p>
-        </footer>
+<div class="container">
+    <div class="alert-box">
+        💡 <strong>下载指南：</strong> 点击绿色按钮<strong>自动复制</strong>链接，随后按指引操作即可下载。
     </div>
 
-    <!-- 弹窗结构 -->
-    <div id="copyModal" class="modal-overlay">
-        <div class="modal-box">
-            <span class="modal-icon">📋</span>
-            <h3 class="modal-title">链接已复制！</h3>
-            <p class="modal-text">下载地址已复制到剪贴板。<br>请点击下方按钮在新标签页打开，或手动粘贴到浏览器地址栏。</p>
-            <input type="text" id="modalInput" class="modal-input" readonly>
-            <div class="modal-btn-group">
-                <a id="openLinkBtn" href="#" target="_blank" class="btn-open">🚀 前往下载</a>
-                <button onclick="closeModal()" class="btn-close">关闭</button>
+    <header class="page-header">
+        <h1>软件工具下载中心</h1>
+    </header>
+
+    <main class="download-grid" id="grid"></main>
+
+    <footer class="footer">
+        <p>© 2026 Xhorse Tools. All rights reserved.</p>
+    </footer>
+</div>
+
+<!-- 动画引导弹窗 (2 步) -->
+<div class="modal-overlay" id="guideModal">
+    <div class="guide-card">
+        <div class="progress-dots">
+            <div class="dot active" id="dot1"></div>
+            <div class="dot" id="dot2"></div>
+        </div>
+
+        <!-- 步骤 1: 复制成功 -->
+        <div class="step-content active" id="step1">
+            <div class="icon-box bounce">📋</div>
+            <div class="guide-title">链接已复制！</div>
+            <div class="guide-text">下载地址已保存到剪贴板。<br>请点击下一步查看如何粘贴。</div>
+
+            <button class="btn-action btn-primary" onclick="goToStep2()">
+                ➡️ 下一步：查看操作指引
+            </button>
+            <br>
+            <button class="btn-action btn-secondary" onclick="closeModal()">取消</button>
+        </div>
+
+        <!-- 步骤 2: 粘贴指引 -->
+        <div class="step-content" id="step2">
+            <div class="icon-box">🚀</div>
+            <div class="guide-title">准备粘贴下载</div>
+            <div class="guide-text">点击下方按钮打开空白页，<strong>务必在浏览器顶部的地址栏粘贴</strong>。</div>
+
+            <div class="arrow-up">⬆️</div>
+            <div class="browser-bar">
+                <div class="fake-url">
+                    <span>(此处完全空白，请在此粘贴)</span>
+                    <span class="blink-cursor"></span>
+                </div>
             </div>
+
+            <div class="keyboard-row">
+                <div class="key press-anim" style="animation-delay: 0s;">Ctrl</div>
+                <div class="key plus">+</div>
+                <div class="key press-anim" style="animation-delay: 0.2s;">V</div>
+            </div>
+
+            <button class="btn-action btn-primary" onclick="finishAndOpen()">
+                ✅ 我知道了，打开空白页下载
+            </button>
+            <br>
+            <button class="btn-action btn-secondary" onclick="closeModal()">关闭引导</button>
         </div>
     </div>
+</div>
 
-    <script>
-        // 复制并显示弹窗的函数
-        function copyAndShow(url) {
-            // 1. 复制到剪贴板
-            navigator.clipboard.writeText(url).then(function() {
-                // 复制成功
-                showModal(url);
-            }, function(err) {
-                // 如果复制失败（极少见），尝试旧方法
-                const textArea = document.createElement("textarea");
-                textArea.value = url;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    showModal(url);
-                } catch (err) {
-                    alert('复制失败，请手动记录链接：' + url);
-                }
-                document.body.removeChild(textArea);
-            });
+<script>
+    // 配置数据
+    const tools = [
+        { name: "VVDI2 工具", ver: "V752", url: "http://dl.xhorse.net.cn/product/vvdi2/software/VVDI2-InstallerV752.exe", pwd: "" },
+        { name: "超编二代", ver: "最新版", url: "http://dl.xhorse.net.cn/product/multiProg/Multi-PROG.exe", pwd: "" },
+        { name: "MLB 工具", ver: "最新版", url: "http://dl.xhorse.net.cn/product/vvdimlb/VVDI-MLB.exe", pwd: "123456" },
+        { name: "综合升级工具", ver: "Kit", url: "http://dl.xhorse.net.cn/product/upgrade-kit.7z", pwd: "123456" },
+        { name: "超编一代", ver: "V5.3.8", url: "http://dl.xhorse.net.cn/product/vvdiprog/VVDIProg5.3.8PASSWORD123456.zip", pwd: "123456" },
+        { name: "MB 设备工具", ver: "V5.1.6", url: "http://dl.xhorse.net.cn/product/vvdi-mb/software/VVDI-MBTOOLV5.1.6_password123456.rar", pwd: "123456" },
+        { name: "宝马工具", ver: "V190", url: "http://dl.xhorse.net.cn/product/bmwtool/software/BMWTOOL-InstallerV190.exe", pwd: "" },
+        { name: "更多工具", ver: "敬请期待", url: "", pwd: "", isPlaceholder: true }
+    ];
+
+    const grid = document.getElementById('grid');
+    let currentUrl = '';
+
+    tools.forEach(tool => {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        if (tool.isPlaceholder) {
+            card.style.borderTopColor = '#95a5a6';
+            card.style.background = '#f9f9f9';
+            card.innerHTML = `
+                <h3 style="color:#7f8c8d">${tool.name}</h3>
+                <span class="ver-tag" style="background:#eee; color:#7f8c8d">${tool.ver}</span>
+                <div style="flex-grow:1; display:flex; align-items:center; justify-content:center; color:#95a5a6; font-size:0.9rem;">暂无下载</div>
+                <button class="copy-btn" style="background:#95a5a6; cursor:default; box-shadow:none;" disabled>无链接</button>
+            `;
+        } else {
+            const pwdHtml = tool.pwd ? `<div class="pwd-note">🔑 解压密码：${tool.pwd}</div>` : '';
+
+            card.innerHTML = `
+                <h3>${tool.name}</h3>
+                <span class="ver-tag">${tool.ver}</span>
+                <div class="card-body">
+                    ${pwdHtml}
+                </div>
+                <button class="copy-btn" onclick="startProcess('${tool.name}', '${tool.url}')">
+                    <svg style="width:18px;height:18px;fill:white" viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    一键复制链接
+                </button>
+            `;
+        }
+        grid.appendChild(card);
+    });
+
+    // 核心流程
+    function startProcess(name, url) {
+        currentUrl = url;
+        navigator.clipboard.writeText(url).then(() => {
+            document.getElementById('guideModal').classList.add('active');
+            showStep(1);
+        }).catch(err => {
+            alert('复制失败，请手动复制：\n' + url);
+        });
+    }
+
+    function showStep(step) {
+        document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.dot').forEach(el => el.classList.remove('active'));
+        document.getElementById(`step${step}`).classList.add('active');
+        document.getElementById(`dot${step}`).classList.add('active');
+    }
+
+    function goToStep2() {
+        showStep(2);
+    }
+
+    // 第二步 -> 完成 (打开顶部强引导页面，带三个红箭头)
+    function finishAndOpen() {
+        const newWindow = window.open('about:blank', '_blank');
+
+        if (newWindow) {
+            // 关键修改：新页面内容固定在顶部，带三个红箭头动画
+            const htmlContent = `
+                <!DOCTYPE html>
+                <html lang="zh-CN">
+                <head>
+                    <meta charset="UTF-8">
+                    <title>请粘贴下载链接</title>
+                    <style>
+                        body { 
+                            margin: 0; 
+                            padding: 0; 
+                            background: #fff; 
+                            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; 
+                            overflow-x: hidden;
+                        }
+                        .guide-container {
+                            padding: 15px 20px;
+                            text-align: center;
+                            background: #f0f8ff;
+                            border-bottom: 2px solid #3498db;
+                            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+                            animation: slideDown 0.5s ease;
+                        }
+                        @keyframes slideDown {
+                            from { transform: translateY(-50px); opacity: 0; }
+                            to { transform: translateY(0); opacity: 1; }
+                        }
+                        .text {
+                            font-size: 16px;
+                            font-weight: bold;
+                            color: #333;
+                            margin-bottom: 10px;
+                        }
+                        .sub {
+                            font-size: 13px;
+                            color: #7f8c8d;
+                            margin-bottom: 15px;
+                        }
+
+                        /* 三个红箭头容器 */
+                        .arrows-wrapper {
+                            display: flex;
+                            justify-content: space-around;
+                            max-width: 600px;
+                            margin: 0 auto 15px auto;
+                            padding: 0 20px;
+                        }
+                        .red-arrow {
+                            font-size: 40px;
+                            color: #e74c3c;
+                            animation: bounceUp 1.2s infinite;
+                            display: inline-block;
+                            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                        }
+                        /* 三个箭头错开动画时间，形成波浪效果 */
+                        .red-arrow:nth-child(1) { animation-delay: 0s; }
+                        .red-arrow:nth-child(2) { animation-delay: 0.2s; }
+                        .red-arrow:nth-child(3) { animation-delay: 0.4s; }
+
+                        @keyframes bounceUp {
+                            0%, 100% { transform: translateY(0) rotate(0deg); }
+                            50% { transform: translateY(-20px) rotate(-5deg); }
+                        }
+
+                        /* 中间的大蓝箭头 */
+                        .big-blue-arrow {
+                            font-size: 50px;
+                            color: #3498db;
+                            margin: 10px 0;
+                            animation: pulse 1.5s infinite;
+                            display: inline-block;
+                            background: white;
+                            border-radius: 8px;
+                            padding: 5px 15px;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                        }
+                        @keyframes pulse {
+                            0%, 100% { transform: scale(1); }
+                            50% { transform: scale(1.1); }
+                        }
+
+                        /* 键盘动画样式复用 */
+                        .keyboard-row {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            gap: 10px;
+                            margin: 15px 0;
+                        }
+                        .key {
+                            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+                            border: 1px solid #ccc;
+                            border-bottom: 4px solid #bbb;
+                            border-radius: 6px;
+                            color: #333;
+                            font-weight: bold;
+                            font-family: monospace;
+                            font-size: 1.2rem;
+                            min-width: 50px;
+                            height: 50px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                        }
+                        .key.plus {
+                            background: transparent;
+                            border: none;
+                            box-shadow: none;
+                            font-size: 1.5rem;
+                            color: #7f8c8d;
+                            min-width: auto;
+                            height: auto;
+                            border-bottom: none;
+                        }
+                        .press-anim {
+                            animation: pressKey 1.5s infinite;
+                        }
+                        @keyframes pressKey {
+                            0%, 100% { transform: translateY(0); border-bottom-width: 4px; }
+                            50% { transform: translateY(4px); border-bottom-width: 0px; }
+                        }
+                        .empty-space {
+                            height: 80vh;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            color: #eee;
+                            font-size: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="guide-container">
+                        <div class="text">👇 请在浏览器顶部的地址栏粘贴 👇</div>
+
+                        <!-- 三个红箭头 -->
+                        <div class="arrows-wrapper">
+                            <div class="red-arrow">⬆️</div>
+                            <div class="red-arrow">⬆️</div>
+                            <div class="red-arrow">⬆️</div>
+                        </div>
+
+                        <div class="sub">地址栏就在箭头所指的最上方</div>
+
+                        <!-- 中间的大蓝箭头 -->
+                        <div class="big-blue-arrow">⬆️</div>
+
+                        <div class="keyboard-row">
+                            <div class="key press-anim" style="animation-delay: 0s;">Ctrl</div>
+                            <div class="key plus">+</div>
+                            <div class="key press-anim" style="animation-delay: 0.2s;">V</div>
+                        </div>
+
+                        <div class="sub" style="margin-top:15px; font-size:13px;">粘贴后按 <strong>Enter (回车)</strong> 键下载</div>
+                    </div>
+
+                    <div class="empty-space">
+                        (页面无其他输入框，请勿在此寻找)
+                    </div>
+                </body>
+                </html>
+            `;
+            newWindow.document.write(htmlContent);
+            newWindow.document.close();
         }
 
-        // 显示弹窗
-        function showModal(url) {
-            const modal = document.getElementById('copyModal');
-            const input = document.getElementById('modalInput');
-            const openBtn = document.getElementById('openLinkBtn');
+        closeModal();
+    }
 
-            input.value = url;
-            openBtn.href = url;
+    function closeModal() {
+        document.getElementById('guideModal').classList.remove('active');
+    }
 
-            modal.style.display = 'flex';
-        }
+    document.getElementById('guideModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+</script>
 
-        // 关闭弹窗
-        function closeModal() {
-            document.getElementById('copyModal').style.display = 'none';
-        }
-
-        // 点击弹窗外部也可以关闭
-        window.onclick = function(event) {
-            const modal = document.getElementById('copyModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
-    </script>
 </body>
 </html>
